@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DSC 209R • Labs & Projects</title>
+  <meta name="description" content="Home page linking to all DSC 209R labs and projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #0f1630;
+      --muted: #93a1b5;
+      --text: #e9eef9;
+      --accent: #7aa2ff;
+      --accent-2: #46e0a2;
+      --ring: rgba(122, 162, 255, .45);
+      --card: #121a3b;
+      --card-hover: #17224f;
+      --shadow: 0 10px 25px rgba(0,0,0,.25), 0 6px 12px rgba(0,0,0,.2);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(122,162,255,.18), transparent),
+                  radial-gradient(900px 500px at 120% 20%, rgba(70,224,162,.12), transparent),
+                  var(--bg);
+      color: var(--text);
+    }
+    header {
+      position: relative;
+      padding: 40px 24px 16px;
+      text-align: center;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .brand .logo {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: conic-gradient(from 180deg at 50% 50%, var(--accent), var(--accent-2), var(--accent));
+      box-shadow: 0 8px 18px rgba(122,162,255,.35);
+    }
+    h1 { margin: 14px 0 8px; font-size: 28px; letter-spacing: .2px; }
+    p.subtitle { margin: 0; color: var(--muted); }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      margin: 22px auto 8px;
+      max-width: 980px;
+      padding: 0 16px;
+    }
+    .search {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 14px; padding: 12px 14px;
+    }
+    .search input { flex: 1; background: transparent; border: 0; color: var(--text); outline: none; font-size: 14px; }
+    .pill { align-self: center; display: inline-flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.06); background: var(--panel); color: var(--text); font-size: 13px; }
+    .pill input { accent-color: var(--accent); }
+    .select { position: relative; }
+    .select select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background: var(--panel); color: var(--text); border: 1px solid rgba(255,255,255,.06); padding: 10px 36px 10px 12px; border-radius: 999px; font-size: 13px; }
+    .select:after { content: "▼"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--muted); pointer-events: none; }
+
+    main { max-width: 1100px; margin: 16px auto 60px; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+    .card {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 16px; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+      text-decoration: none; color: var(--text);
+    }
+    .card:hover { transform: translateY(-2px); background: var(--card-hover); box-shadow: 0 14px 30px rgba(0,0,0,.35); }
+    .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--ring); }
+    .title { font-weight: 600; font-size: 16px; letter-spacing: .2px; }
+    .desc { color: var(--muted); font-size: 13px; line-height: 1.35; min-height: 34px; }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 36px 16px 48px; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; background: #0b1126; padding: 3px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,.08); }
+
+    @media (max-width: 640px) {
+      .toolbar { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand" aria-label="Site identity">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div style="font-weight:700; letter-spacing:.3px">DSC 209R</div>
+        <div style="font-size:12px; color:var(--muted)">Labs & Projects by Dongting Cai</div>
+      </div>
+    </div>
+    <h1>Labs & Projects Home</h1>
+    <p class="subtitle">Quick links to each lab and project. Uses folder names like <span class="kbd">Lab-01</span> → <span class="kbd">index.html</span>.</p>
+  </header>
+
+  <section class="toolbar" aria-label="Filters and search">
+    <div class="search" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7"/></svg>
+      <input id="q" placeholder="Search (e.g., Lab 02, scatter, Project 01)" aria-label="Search labs and projects" />
+    </div>
+
+    <label class="pill"><input id="existsOnly" type="checkbox" /> Show only existing pages</label>
+
+    <div class="select">
+      <select id="sort">
+        <option value="default">Sort: Default</option>
+        <option value="asc">Sort: A → Z</option>
+        <option value="desc">Sort: Z → A</option>
+      </select>
+    </div>
+  </section>
+
+  <main>
+    <div id="cards" class="grid" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div>Tip: put each lab in <span class="kbd">Lab-xx/index.html</span> and each project in <span class="kbd">Project-xx/index.html</span>. This page will link to them automatically.</div>
+  </footer>
+
+  <script>
+    // === Configuration ===
+    // Counts (used for auto-generating placeholders)
+    const LAB_COUNT = 8;     // Lab-01 .. Lab-08
+    const PROJECT_COUNT = 3; // Project-01 .. Project-03
+
+    // Option A) Path/title/description overrides for generated items.
+    // - Key format must be 'Lab-xx' or 'Project-xx' (two-digit id)
+    // - Only include entries you want to override.
+    // - Example: 'Lab-02': 'Lab-02/alt.html'
+    const PATH_OVERRIDES = {
+      // 'Lab-02': 'Lab-02/overview.html',
+      'Project-01': 'Project-01/Final/final_project1_altair_2.html',
+    };
+    const TITLE_OVERRIDES = {
+      // 'Lab-02': 'Lab 02 • Interaction & Critique',
+      // 'Project-03': 'Project 03 • Final Dashboard',
+    };
+    const DESC_OVERRIDES = {
+      // 'Lab-02': 'Critique & redesign write‑up',
+      // 'Project-03': 'End-to-end data story',
+    };
+
+    // Option B) Extra items that aren't part of the default sequence
+    // (e.g., bonus labs, resources, writeups). Use any id string.
+    const EXTRA_ITEMS = [
+      // { kind: 'Lab', id: '09', title: 'Lab 09 (Bonus)', path: 'Lab-09/index.html', desc: 'Optional extension' },
+      // { kind: 'Resource', id: 'Syllabus', title: 'Course Syllabus', path: 'docs/syllabus.html', desc: 'Reference' },
+    ];
+
+    // Option C) Hide certain auto-generated items by key 'Lab-xx' or 'Project-xx'
+    const HIDE = new Set([
+      // 'Lab-07',
+    ]);
+
+    const SITE_BASE = location.pathname.replace(/\/[^/]*$/, '/'); // base path of index.html
+
+    // Build base items list (auto + extras) with overrides applied
+    const items = [];
+    function makeKey(kind, id) { return `${kind}-${id}`; }
+    function fmt(kind, id) { return `${kind} ${id}`; }
+
+    // Auto-generate Labs
+    for (let i = 1; i <= LAB_COUNT; i++) {
+      const id = String(i).padStart(2, '0');
+      const key = `Lab-${id}`;
+      if (HIDE.has(key)) continue;
+      const title = TITLE_OVERRIDES[key] || `Lab ${id}`;
+      const desc = DESC_OVERRIDES[key] || 'Lab assignment page';
+      const path = PATH_OVERRIDES[key] || `Lab-${id}/index.html`;
+      items.push({ kind: 'Lab', id, title, path, desc });
+    }
+    // Auto-generate Projects
+    for (let i = 1; i <= PROJECT_COUNT; i++) {
+      const id = String(i).padStart(2, '0');
+      const key = `Project-${id}`;
+      if (HIDE.has(key)) continue;
+      const title = TITLE_OVERRIDES[key] || `Project ${id}`;
+      const desc = DESC_OVERRIDES[key] || 'Project page';
+      const path = PATH_OVERRIDES[key] || `Project-${id}/index.html`;
+      items.push({ kind: 'Project', id, title, path, desc });
+    }
+
+    // Inject any extra custom items
+    for (const extra of EXTRA_ITEMS) {
+      // If a duplicate key exists, the extra will replace it by filtering later
+      items.push({
+        kind: extra.kind || 'Item',
+        id: extra.id || '',
+        title: extra.title || `${extra.kind} ${extra.id}`,
+        path: extra.path,
+        desc: extra.desc || 'Additional link'
+      });
+    }
+
+    const cardsEl = document.getElementById('cards');
+    const qEl = document.getElementById('q');
+    const sortEl = document.getElementById('sort');
+    const existsOnlyEl = document.getElementById('existsOnly');
+
+    let availabilityCache = new Map();
+
+    function el(html) { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstChild; }
+
+    function cardTemplate(item, exists) {
+      const url = new URL(item.path, location.href).href;
+      const existsBadge = exists ? '<span class="badge" title="This page exists and is reachable"><span class="dot"></span> live</span>'
+                                 : '<span class="badge" title="This page link may 404 until you add index.html"><span class="dot" style="background:#FFB020; box-shadow:0 0 0 4px rgba(255,176,32,.2)"></span> pending</span>';
+      return `
+        <a class="card" href="${url}">
+          <div class="badge">${existsBadge}</div>
+          <div class="title">${item.title}</div>
+          <div class="desc">${item.kind} • ${item.desc}</div>
+        </a>`;
+    }
+
+    async function checkExists(path) {
+      if (availabilityCache.has(path)) return availabilityCache.get(path);
+      try {
+        // Using GET for better compatibility on GitHub Pages
+        const res = await fetch(path, { method: 'GET', redirect: 'follow', cache: 'no-cache' });
+        const ok = res.ok;
+        availabilityCache.set(path, ok);
+        return ok;
+      } catch (e) {
+        availabilityCache.set(path, false);
+        return false;
+      }
+    }
+
+    async function render() {
+      const query = (qEl.value || '').toLowerCase().trim();
+      const sort = sortEl.value;
+      const showExistingOnly = existsOnlyEl.checked;
+
+      let list = items.slice();
+      if (query) {
+        list = list.filter(it => `${it.kind} ${it.id} ${it.title} ${it.desc}`.toLowerCase().includes(query));
+      }
+      if (sort === 'asc') list.sort((a,b)=> (a.kind+a.id).localeCompare(b.kind+b.id));
+      if (sort === 'desc') list.sort((a,b)=> (b.kind+b.id).localeCompare(a.kind+a.id));
+
+      // Pre-check existence concurrently for visible set
+      const checks = await Promise.all(list.map(it => checkExists(it.path)));
+      const withStatus = list.map((it, i) => ({...it, exists: checks[i]}));
+      const final = showExistingOnly ? withStatus.filter(x=>x.exists) : withStatus;
+
+      cardsEl.innerHTML = '';
+      final.forEach(it => cardsEl.appendChild(el(cardTemplate(it, it.exists))));
+
+      if (!final.length) {
+        cardsEl.innerHTML = '<div style="opacity:.8; padding:12px">No matches yet. Add folders like <span class="kbd">Lab-01</span> with an <span class="kbd">index.html</span>, or adjust your filters.</div>';
+      }
+    }
+
+    qEl.addEventListener('input', render);
+    sortEl.addEventListener('change', render);
+    existsOnlyEl.addEventListener('change', render);
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>
