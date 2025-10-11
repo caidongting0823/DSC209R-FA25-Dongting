@@ -4,3 +4,55 @@ body {
 	 */
   font: 100%/1.5 system-ui;
 }
+
+/* --- Step 1: Page layout --- */
+/* 1. Limit line length and center the page */
+html {
+  --page-max: 100ch; /* custom property for max line length */
+}
+
+body {
+  max-width: var(--page-max);   /* limit line length */
+  margin-inline: auto;          /* center the page */
+  padding-inline: 1rem;         /* side gutters on small screens */
+}
+
+/* 2. Make images, videos, SVGs, and canvases responsive */
+img, video, svg, canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;   /* avoids stray gaps below images */
+}
+
+/* --- Step 2: Navigation bar --- */
+:root {
+  /* tweak this later if you want a different accent */
+  --accent: oklch(0.499 0.211 262.246); /* a pleasant blue */
+  --line: oklch(0.905 0.105 85.617);   /* subtle gray-blue divider */
+}
+
+nav {
+  display: flex;                 /* lay out links in a row */
+  margin-bottom: 1rem;           /* space below the bar */
+  border-bottom: 1px solid var(--line);
+}
+
+nav a {
+  flex: 1;                       /* equal width items */
+  text-align: center;            /* center labels */
+  text-decoration: none;         /* remove underline */
+  color: inherit;                /* use page text color */
+  padding: .5rem 0;              /* bigger tap/click target */
+  border-bottom: .4rem solid transparent; /* for hover/current underline */
+}
+
+nav a.current,
+nav a[aria-current="page"] {
+  border-bottom-color: var(--line);
+  padding-bottom: calc(.5rem - .4rem); /* keep height consistent */
+}
+
+nav a:hover {
+  border-bottom-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, white);
+}
