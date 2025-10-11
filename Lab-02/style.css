@@ -90,7 +90,7 @@ form textarea {
   width: 100%;
   box-sizing: border-box;
   padding: .5rem .6rem;
-  border: 1px solid oklch(85% 0.03 200);
+  border: 1px solid oklch(0.848 0.128 74.021);
   border-radius: .25rem;
 }
 
@@ -108,3 +108,21 @@ form button {
 }
 
 form button:hover { background: color-mix(in oklab, var(--accent) 10%, white); }
+
+/* --- Step 4: Projects grid --- */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1rem;
+}
+
+/* Each card aligns its inner pieces to a shared rhythm */
+.projects > article {
+  display: grid;
+  grid-template-rows: subgrid; /* align headings, images, text across rows */
+  grid-row: span 3;            /* three rows per card: h2, img, p */
+  gap: .5rem;
+}
+
+.projects h2 { margin: 0; line-height: 1.2; }
+.projects img { width: 100%; height: auto; display: block; }
