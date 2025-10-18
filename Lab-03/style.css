@@ -7,6 +7,8 @@ body {
 
 /* --- Step 1: Page layout --- */
 /* 1. Limit line length and center the page */
+html { color-scheme: light dark; }
+
 html {
   --page-max: 100ch; /* custom property for max line length */
 }
@@ -32,18 +34,20 @@ img, video, svg, canvas {
 }
 
 nav {
-  display: flex;                 /* lay out links in a row */
-  margin-bottom: 1rem;           /* space below the bar */
-  border-bottom: 1px solid var(--line);
+    display: flex;                 /* lay out links in a row */
+    margin-bottom: 1rem;           /* space below the bar */
+    border-bottom: 1px solid var(--line);
+    background: canvas;
+    color: canvastext;
 }
 
 nav a {
-  flex: 1;                       /* equal width items */
-  text-align: center;            /* center labels */
-  text-decoration: none;         /* remove underline */
-  color: inherit;                /* use page text color */
-  padding: .5rem 0;              /* bigger tap/click target */
-  border-bottom: .4rem solid transparent; /* for hover/current underline */
+    flex: 1;                       /* equal width items */
+    text-align: center;            /* center labels */
+    text-decoration: none;         /* remove underline */
+    color: inherit;                /* use page text color */
+    padding: .5rem 0;              /* bigger tap/click target */
+    border-bottom: .4rem solid transparent; /* for hover/current underline */
 }
 
 nav a.current,
@@ -54,8 +58,9 @@ nav a[aria-current="page"] {
 
 nav a:hover {
   border-bottom-color: var(--accent);
-  background: color-mix(in oklab, var(--accent) 12%, white);
+  background: color-mix(in oklab, var(--accent) 10%, canvas 85%);
 }
+
 
 /* --- Step 3: Contact form layout (Grid + subgrid) --- */
 form {
@@ -107,7 +112,7 @@ form button {
   accent-color: var(--accent);
 }
 
-form button:hover { background: color-mix(in oklab, var(--accent) 10%, white); }
+form button:hover { background: color-mix(in oklab, var(--accent) 10%, canvas); }
 
 /* --- Step 4: Projects grid --- */
 .projects {
@@ -189,3 +194,4 @@ form button:hover { background: color-mix(in oklab, var(--accent) 10%, white); }
   body { padding-inline: 0; }
   .cv h2 { border-color: #bfbfbf; }
 }
+
