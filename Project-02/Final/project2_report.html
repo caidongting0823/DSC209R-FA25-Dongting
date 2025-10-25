@@ -141,6 +141,34 @@
     </style>
   </head>
 
+  <style>
+  .badge{
+    display:inline-block;
+    padding:.1rem .5rem;
+    border:1px solid transparent;
+    border-radius:999px;
+    font:600 0.85em/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    vertical-align:baseline;
+    white-space:nowrap;
+  }
+  .badge[data-score^="+"]{
+    background:#e8f6ee;
+    color:#0f5132;
+    border-color:#b9e3cc;
+  }
+  .badge[data-score="0"]{
+    background:#eef2f6;
+    color:#2c3e50;
+    border-color:#d9e1ea;
+  }
+  .badge[data-score^="-"]{
+    background:#fdecea;
+    color:#842029;
+    border-color:#f5c2c7;
+  }
+</style>
+
+
   <body>
     <header>
       <h1>
@@ -154,44 +182,159 @@
     <main>
       <h2>Proposition: Clinic Closures Lead to Lower Abortion Rates</h2>
 
+        <section>
+            <h3>FOR the Proposition</h3>
+
+           <figure>
+              <img src="Proj-02_Supporting.svg" alt="" loading="lazy"
+                   style="max-width:93%;height:auto;display:block;margin-inline:auto;" />
+              <figcaption>Correlation Between Reduced Clinic Access and Declining Abortion Rates in Selected States (2017–2020)</figcaption>
+          </figure>
+
+            <p>Design Decisions and Rationale:</p>
+
+            <ul>
+                <li><span class="badge" data-score="-2">-2</span>
+                <b>Data Filtering: Top 25 States with Largest Rate Declines + Clinic Closures Only.</b>
+                    This is the most deceptive decision. The code explicitly filters to show only the 25 states with the
+                    largest abortion rate declines (K=25, sorted by rate_plot ascending) AND requires that these states
+                    also had clinic closures (REQUIRE_CLOSURES_PCT = True filters to clinic_change_pct < 0).
+                    This is classic cherry-picking—deliberately excluding all states where rates increased despite
+                    clinic closures, or where rates decreased without closures. It presents correlation as causation by
+                    only showing cases that support the narrative. I considered showing all states to provide a complete
+                    context, but that would reveal many counterexamples that weaken the argument. This selective
+                    filtering is central to making the visualization persuasive, but it's fundamentally misleading about
+                    the actual relationship between clinic access and abortion rates.
+                </li>
+
+                <li><span class="badge" data-score="-1.5">-1.5</span>
+                <b>Color Coding:</b> I used green (universally understood as "positive") for both abortion rate
+                    decreases and clinic closures embeds a value judgment directly into the design.
+                    Green signals "good" while the unused red would signal "bad," framing both declines
+                    as achievements rather than as neutral data points. This is deceptive because it presents a
+                    subjective moral stance as objective visualization design. The color choice tells viewers how to
+                    feel about the data before they've critically evaluated it. Alternative neutral colors
+                    (like blue/orange) would avoid this moral framing, but I chose green specifically because it
+                    reinforces the "pro-restriction" argument by making decreases appear inherently positive.
+                </li>
+                <li><span class="badge" data-score="-1">-1</span>
+                    <b>Layout (Visual Correlation):</b>
+                    Placing abortion rate changes and clinic percentage changes in adjacent panels with shared y-axes
+                    (same state order) creates intense visual pressure to connect the two datasets. Viewers naturally
+                    scan horizontally across the panels and perceive visual correspondence as evidence of a
+                    relationship. This works persuasively because the aligned bars invite comparison, but it's somewhat
+                    deceptive because spatial proximity suggests tighter correlation than may actually exist.
+                    I considered a dumbbell plot (Percentage change for both Clinic and Abortion Rate),
+                    which would more accurately reflect the strength of the correlation, but the dual-bar layout
+                    creates a more dramatic visual impact that supports the causal narrative.
+                </li>
+                <li><span class="badge" data-score="0">0</span>
+                    <b>Percentage Metric:</b>
+                    Using percentage change for both metrics rather than absolute changes is relatively neutral.
+                    It's standard practice for comparing rates of change across different baselines, and it doesn't
+                    inherently favor either argument. However, percentages can amplify small absolute changes
+                    (e.g., 2 clinics to 1 clinic = -50%), which could be seen as mildly misleading.
+                    I considered showing absolute numbers alongside percentages for more complete context,
+                    but settled on percentages alone as they're appropriate for the temporal comparison being made.
+                </li>
+            </ul>
+        </section>
+
       <section>
-        <h3>FOR the Proposition</h3>
+          <h3>AGAINST the Proposition</h3>
 
-        <figure>
-          <img src="IMAGE_FILENAME" alt="" />
-          <figcaption>BRIEF CAPTION HERE.</figcaption>
-        </figure>
+          <figure>
+              <img src="Proj-02_Opposing.png" alt="" loading="lazy"
+                   style="max-width:80%;height:auto;display:block;margin-inline:auto;" />
+              <figcaption>Abortion Rates by State Clinic Access and Out-of-State Travel Patterns (2020)</figcaption>
+          </figure>
 
-        <p>Design Decisions and Rationale:</p>
-
-        <ul>
-          <li>RATIONALE_1</li>
-          <li>RATIONALE_2</li>
-          <li>RATIONALE_3</li>
-        </ul>
+          <p>Design Decisions and Rationale:</p>
+          <ul>
+            <li><span class="badge" data-score="+2">+2</span>
+                <b>Y-axis = residents’ abortion rate (per 1,000 women aged 15 - 44 in 2020):</b>
+                This aligns the metric with the thesis by focusing on outcomes for state residents rather than the
+                location of procedures. It prevents the “illusory decline” that occurs when occurrence-based rates
+                decrease because patients cross borders. I thought about using “% change 2017–2020,” but we cannot
+                be sure if this row is based on the local resident rate or the total rate that occurred within the
+                state, which could be misleading; the resident rate more accurately reflects the claim.</li>
+            <li><span class="badge" data-score="+1">+1</span>
+                <b>Color & size: % out-of-state (quartiles for color & size continuous):</b>
+                Mapping out-of-state directly shows how demand reallocates rather than disappears; darker/bigger marks
+                are the states most sustained by cross-state care. Quartiling improves legend readability and
+                comparison, though it discretizes and can hide within-bin variation (trade-off I accepted for clarity).
+                I considered a fully continuous color scale, but found the legend harder to scan.</li>
+            <li><span class="badge" data-score="+1">+2</span>
+                <b>Show all 50 states + DC in a non-geographic scatter, fixed scales, no axis truncation.</b>
+                This avoids cherry-picking and area/shape bias from maps, and it prevents exaggeration from truncated
+                axes. Labels are handled with unobtrusive state abbreviations / hover to keep clutter down.
+                I considered filtering for extreme outliers or faceting by region,
+                but kept a single view so the full national pattern is visible at once.</li>
+          </ul>
       </section>
 
-      <section>
-        <h3>AGAINST the Proposition</h3>
-
-        <figure>
-          <img src="IMAGE_FILENAME" alt="" />
-          <figcaption>BRIEF CAPTION HERE.</figcaption>
-        </figure>
-
-        <p>Design Decisions and Rationale:</p>
-
-        <ul>
-          <li>RATIONALE_1</li>
-          <li>RATIONALE_2</li>
-          <li>RATIONALE_3</li>
-        </ul>
-      </section>
 
       <section>
         <h2>Final Reflection</h2>
 
-        <p>[WRITE FINAL REFLECTION PARAGRAPHS HERE.]</p>
+        <p>
+            Designing the “closures → lower rates” view was surprisingly straightforward once we framed the story as
+            change vs. change at the state level and enforced consistent encodings (same % scale, same zero rule,
+            green for declines). <b>The hard parts were judgment calls: whether to rebase to a national median,
+            how wide to set “near-zero” thresholds, and how aggressively to filter (like, showing the states with the
+            largest declines).</b> Those choices materially shape the takeaway even when the code is honest.
+            On the “closures do NOT lower rates” side, it was trickier: the data itself resists a clean
+            counter-narrative, so persuasion relied more on transformations and layout. For example,
+            emphasizing displacement (occurrence-residence), pairing bars to direct attention to cross-border
+            travel, and sorting to align with the claim.
+        </p>
+        <p>
+            The most striking aspect of this design process was <b>how effortless it was to create a deeply misleading
+            visualization</b> through data selection alone. The "supporting" visualization required only a few
+            lines of filtering code to transform the dataset into a seemingly compelling argument for causation.
+            And this also includes the psychological power of the side-by-side layout, even knowing I had
+            cherry-picked the data, the visual alignment of green bars still created an almost visceral sense
+            of connection between clinic closures and rate decreases. In contrast, the "opposing" visualization
+            was straightforward to design ethically because it relied on honest metrics (residence rates vs.
+            occurrence rates) and complete data. The challenge there was making the true pattern visible through
+            practical annotation and encoding rather than through data manipulation. This asymmetry reveals something
+            uncomfortable: <b>deception sometimes is easier than clarity.</b>
+        </p>
+
+        <p>
+            Ethical visualization involves presenting complete or representative data,
+            using metrics that accurately measure what you claim to assess, and clearly distinguishing
+            between observed patterns (correlation) and claimed relationships (causation).
+            <b>This has led me to a working definition of ethical analysis and visualization:
+            be selective but meticulous.</b> Selection is unavoidable - we must choose metrics, time frames,
+            and subsets—but each decision should be justifiable, reproducible, and transparent (for example, a reader
+            could replicate our process). “Acceptable persuasion” includes: consistent scales and baselines;
+            clearly annotated filters (such as, “top K by rate decline”); pre-declared, modest thresholds;
+            color/mark semantics that align with the phenomenon; and transformations that preserve the meaning of
+            the quantity (such as rebasing or standardizing) while clearly stating the reference point.
+            To me, “misleading” begins when the audience cannot reasonably recover the truth even if they try:
+            undisclosed cherry-picking; swapped denominators or mixed definitions (occurrence vs. residence)
+            without proper indication; axis reversals or truncations that are not clearly labeled; hiding
+            counterexamples or significant uncertainty; or conflating co-movement with causation.
+        </p>
+
+        <p>
+            I believe there are meaningful boundaries between acceptable persuasion and deception,
+            though the line is sometimes blurry. Data manipulation (filtering, cherry-picking, metric
+            switching to alter conclusions) crosses into deception, while rhetorical framing (titles, color
+            semantics, annotation emphasis) remains in the realm of acceptable persuasion, provided the underlying
+            data is complete and honestly represented. For example, the "supporting" visualization's green color
+            choice is persuasive but would be acceptable if applied to complete data; it becomes deceptive only
+            when combined with the cherry-picked sample. The key difference is whether viewers could reasonably
+            find contradictory evidence within the visualization itself, or if the designer has hidden it through
+            data selection. Persuasion works with the data you have; deception works by choosing which data to
+            include. We can create strong, rhetorically effective visuals, but our guardrails are:
+            (1) internal consistency, (2) clear statements of filters/transformations,
+            (3) stable definitions across panels, and (4) the “replicability test,”
+            a careful reader with the data should be able to trace our process and see the same results.
+            <b>When these conditions are met, persuasion enhances understanding,
+            when they aren’t, it veers into manipulation.</b>
+        </p>
       </section>
     </main>
   </body>
