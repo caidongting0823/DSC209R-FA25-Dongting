@@ -195,3 +195,79 @@ form button:hover { background: color-mix(in oklab, var(--accent) 10%, canvas); 
   .cv h2 { border-color: #bfbfbf; }
 }
 
+/* Github Sections */
+.github-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  align-items: start;
+}
+
+.repo-card {
+  border: 1px solid var(--line, #ddd);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--card, Canvas);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
+}
+
+.repo-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+}
+
+.repo-card p {
+  margin: 0 0 0.75rem 0;
+  color: var(--muted, #444);
+}
+
+.repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+#profile-stats dl {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .5rem 1rem;
+}
+#profile-stats dt { grid-row: 1; font-weight: 600; }
+#profile-stats dd { grid-row: 2; margin: 0; }
+
+/* --- GitHub blocks: tiny polish --- */
+.github-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+.repo-card {
+  border: 1px solid var(--line, #303036);
+  border-radius: 12px;
+  padding: 1rem;
+  background: var(--card, color-mix(in oklab, Canvas 94%, #000 6%));
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+}
+.repo-card h3 { margin: 0 0 .5rem; font-size: 1.05rem; }
+.repo-card p { margin: 0 0 .75rem; opacity: .9; }
+.repo-meta {
+  display: flex; gap: .9rem; padding: 0; margin: 0; list-style: none;
+  font-size: .9rem; opacity: .9;
+}
+
+/* Profile stats as a neat 4-up */
+#profile-stats dl {
+  display: grid; gap: .25rem 1rem;
+  grid-template-columns: repeat(4, minmax(8rem, 1fr));
+}
+#profile-stats dt { font-weight: 600; opacity: .85; }
+#profile-stats dd { margin: 0 0 .75rem; }
+@media (max-width: 720px) {
+  #profile-stats dl { grid-template-columns: repeat(2, 1fr); }
+}
+

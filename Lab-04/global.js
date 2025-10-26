@@ -134,6 +134,12 @@ export function renderProjects(projects, container, headingLevel = 'h2') {
   }
 }
 
+// Fetch public GitHub user data (Step 3.2)
+export async function fetchGitHubData(username) {
+  return fetchJSON(`https://api.github.com/users/${username}`);
+}
+
+
 /*
 # Legacy Code for Step 2
 

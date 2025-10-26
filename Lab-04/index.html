@@ -16,13 +16,25 @@
 
     <img src="images/Lab-01_Image.JPG" alt="A photo of me taken in Sequoia" width="600">
 
-    <script type="module" src="global.js"></script>
+    <!-- GitHub section -->
+    <div id="profile-stats" aria-live="polite">
+    <h2>GitHub Profile</h2>
+    <p>Loading…</p>
+    </div>
+    
+    <h2>Latest on GitHub</h2>
+    <div class="github-grid" aria-live="polite">
+      <p class="loading">Loading Repos…</p>
+    </div>
 
+    <!-- Projects sections -->
     <h2>Latest Projects</h2>
     <div class="projects"><!-- JS injects 3 cards here --></div>
+
 
     <!-- scripts -->
     <script type="module" src="global.js"></script>
     <script type="module" src="index.js" defer></script>
+    <script type="module" src="github.js" defer></script>
 </body>
 </html>
