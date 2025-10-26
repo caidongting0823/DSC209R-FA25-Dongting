@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Contact</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h1>Contact</h1>
+
+    <form action="mailto:docai@ucsd.edu" method="get">
+
+        <label>
+            <span>Your email</span>
+            <input type="email" name="email" autocomplete="email" required>
+        </label>
+
+        <label>
+            <span>Subject</span>
+            <input name="subject" required>
+        </label>
+
+        <label>
+            <span>Message</span>
+            <textarea name="body" rows="6" required></textarea>
+        </label>
+
+        <button type="submit">Send</button>
+    </form>
+
+    <script type="module" src="../global.js"></script>
+</body>
+</html>

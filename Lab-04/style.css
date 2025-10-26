@@ -1,0 +1,197 @@
+body {
+  /* Set line height to 1.5 times the font size
+	   and use the OS’s UI font as the website font
+	 */
+  font: 100%/1.5 system-ui;
+}
+
+/* --- Step 1: Page layout --- */
+/* 1. Limit line length and center the page */
+html { color-scheme: light dark; }
+
+html {
+  --page-max: 100ch; /* custom property for max line length */
+}
+
+body {
+  max-width: var(--page-max);   /* limit line length */
+  margin-inline: auto;          /* center the page */
+  padding-inline: 1rem;         /* side gutters on small screens */
+}
+
+/* 2. Make images, videos, SVGs, and canvases responsive */
+img, video, svg, canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;   /* avoids stray gaps below images */
+}
+
+/* --- Step 2: Navigation bar --- */
+:root {
+  /* tweak this later if you want a different accent */
+  --accent: oklch(0.525 0.204 265.44); /* a pleasant blue */
+  --line: oklch(0.848 0.128 74.021);   /* subtle gray-blue divider */
+}
+
+nav {
+    display: flex;                 /* lay out links in a row */
+    margin-bottom: 1rem;           /* space below the bar */
+    border-bottom: 1px solid var(--line);
+    background: canvas;
+    color: canvastext;
+}
+
+nav a {
+    flex: 1;                       /* equal width items */
+    text-align: center;            /* center labels */
+    text-decoration: none;         /* remove underline */
+    color: inherit;                /* use page text color */
+    padding: .5rem 0;              /* bigger tap/click target */
+    border-bottom: .4rem solid transparent; /* for hover/current underline */
+}
+
+nav a.current,
+nav a[aria-current="page"] {
+  border-bottom-color: var(--line);
+  padding-bottom: calc(.5rem - .4rem); /* keep height consistent */
+}
+
+nav a:hover {
+  border-bottom-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, canvas 85%);
+}
+
+
+/* --- Step 3: Contact form layout (Grid + subgrid) --- */
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;  /* label column + field column */
+  gap: 1rem;                        /* row/col spacing */
+  align-items: center;
+}
+
+form label {
+  /* Each label becomes a mini-layout that inherits the form's columns */
+  display: grid;
+  grid-template-columns: subgrid;   /* use the parent (form) columns */
+  grid-column: 1 / -1;              /* each label spans the full row */
+  gap: .5rem;
+}
+
+form label span {
+  grid-column: 1;                   /* label text on the left */
+  align-self: center;
+}
+
+form input,
+form textarea,
+form button {
+  font: inherit;                    /* match site typography */
+}
+
+form input,
+form textarea {
+  grid-column: 2;                   /* controls on the right */
+  width: 100%;
+  box-sizing: border-box;
+  padding: .5rem .6rem;
+  border: 1px solid oklch(0.848 0.128 74.021);
+  border-radius: .25rem;
+}
+
+form textarea { resize: vertical; }
+
+form button {
+  grid-column: 1 / -1;              /* button spans both columns */
+  justify-self: start;
+  padding: .55rem 1rem;
+  border: 1px solid oklch(85% 0.03 200);
+  border-radius: .35rem;
+  background: white;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+form button:hover { background: color-mix(in oklab, var(--accent) 10%, canvas); }
+
+/* --- Step 4: Projects grid --- */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1rem;
+}
+
+/* Each card aligns its inner pieces to a shared rhythm */
+.projects > article {
+  display: grid;
+  grid-template-rows: subgrid; /* align headings, images, text across rows */
+  grid-row: span 3;            /* three rows per card: h2, img, p */
+  gap: .5rem;
+}
+
+.projects h2 { margin: 0; line-height: 1.2; }
+.projects img { width: 100%; height: auto; display: block; }
+
+
+/* --- Step 5: CV / resume styles --- */
+
+/* Layout rhythm */
+.cv {
+  display: grid;
+  gap: 1.25rem;
+}
+.cv section {
+  display: grid;
+  gap: .5rem;
+}
+
+/* Headings */
+.cv h2 {
+  border-bottom: 1px solid oklch(0.525 0.204 265.44);
+  padding-bottom: .25rem;
+  margin: 0;
+}
+.cv h3 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Meta rows (title + dates/place) */
+.cv article > p:first-of-type {
+  margin: 0 0 .25rem 0;
+  color: oklch(0.805 0 89.876);
+  font-size: 0.95em;
+}
+
+/* Lists */
+.cv ul {
+  margin: 0 0 0 1.25rem;
+}
+.cv .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cv .tags li {
+  border: 1px solid oklch(0.525 0.204 265.44);
+  border-radius: .4rem;
+  padding: .2rem .5rem;
+  font-size: .95em;
+}
+
+/* Compact spacing between stacked articles */
+.cv article + article {
+  margin-top: .75rem;
+}
+
+/* Print-friendly tweaks (optional but nice) */
+@media print {
+  nav { display: none; }
+  a { color: #bfbfbf; text-decoration: none; }
+  body { padding-inline: 0; }
+  .cv h2 { border-color: #bfbfbf; }
+}
+
