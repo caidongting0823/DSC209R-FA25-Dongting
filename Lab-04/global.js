@@ -107,6 +107,32 @@ const PAGES = [
   });
 })();
 
+// /global.js
+export async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
+  return res.json();
+}
+
+export function renderProjects(projects, container, headingLevel = 'h2') {
+  if (!container) return;
+  container.innerHTML = '';
+  const safeHeading = /^(h[1-6])$/.test(headingLevel) ? headingLevel : 'h2';
+  for (const p of projects ?? []) {
+    const a = document.createElement('article');
+    const title = p?.title ?? 'Untitled';
+    const img   = p?.image ?? '';
+    const desc  = p?.description ?? '';
+    a.innerHTML = `
+      <${safeHeading}>${title}</${safeHeading}>
+      <img src="${img}" alt="${title}">
+      <p>${desc}</p>`;
+    container.appendChild(a);
+  }
+  if (!projects || projects.length === 0) {
+    container.innerHTML = '<p>No projects to display.</p>';
+  }
+}
 
 /*
 # Legacy Code for Step 2
