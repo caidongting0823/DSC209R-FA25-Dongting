@@ -138,6 +138,23 @@
           }
         }
       }
+
+      /* Source note */
+    .source-note{
+      margin: 1rem 0 2rem;
+      padding: .5rem .75rem;
+      background: var(--color-neutral-95);
+      border: 1px dashed var(--color-neutral-80);
+      border-radius: .5rem;
+      font-size: .9rem;
+      color: var(--color-neutral-40);
+    }
+    .source-note a{
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 0px;
+    }
     </style>
   </head>
 
@@ -188,8 +205,13 @@
            <figure>
               <img src="Proj-02_Supporting.svg" alt="" loading="lazy"
                    style="max-width:93%;height:auto;display:block;margin-inline:auto;" />
-              <figcaption>Correlation Between Reduced Clinic Access and Declining Abortion Rates in Selected States (2017–2020)</figcaption>
+              <figcaption>Correlation Between Reduced Clinic Access and Declining Abortion Rates in Selected States (2017–2020)
+                  <span class="source-note" style="display:inline;margin:0;padding:0;">
+                      Source: <a href="https://www.guttmacher.org/monthly-abortion-provision-study">Guttmacher Institute</a>
+                  </span>
+              </figcaption>
           </figure>
+
 
             <p>Design Decisions and Rationale:</p>
 
@@ -243,11 +265,17 @@
       <section>
           <h3>AGAINST the Proposition</h3>
 
-          <figure>
+            <figure>
               <img src="Proj-02_Opposing.png" alt="" loading="lazy"
-                   style="max-width:80%;height:auto;display:block;margin-inline:auto;" />
-              <figcaption>Abortion Rates by State Clinic Access and Out-of-State Travel Patterns (2020)</figcaption>
-          </figure>
+                   style="max-width:80%;height:auto;display:block;margin-inline:auto;">
+              <figcaption>
+                Abortion Rates by State Clinic Access and Out-of-State Travel Patterns (2020)
+                <span class="source-note" style="display:inline;margin:0;padding:0;">
+                    Source: <a href="https://www.guttmacher.org/monthly-abortion-provision-study">Guttmacher Institute</a>
+                </span>
+              </figcaption>
+            </figure>
+
 
           <p>Design Decisions and Rationale:</p>
           <ul>
@@ -336,6 +364,7 @@
             when they aren’t, it veers into manipulation.</b>
         </p>
       </section>
+
     </main>
   </body>
 </html>
