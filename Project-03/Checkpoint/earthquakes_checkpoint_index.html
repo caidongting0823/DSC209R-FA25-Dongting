@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 3 Checkpoint — Group 7 — A Century of U.S. Earthquakes</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #11182e;
+      --ink: #e6ebff;
+      --muted: #9fb2ff;
+      --accent: #7aa2ff;
+      --accent-2: #a3ffcd;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 32px auto 96px;
+      padding: 0 16px;
+    }
+    header {
+      background: linear-gradient(120deg, rgba(122,162,255,.12), rgba(163,255,205,.08));
+      border: 1px solid rgba(122,162,255,.25);
+      border-radius: 16px;
+      padding: 20px 20px 16px;
+      margin-bottom: 20px;
+    }
+    h1, h2, h3 { margin: 0.2em 0 0.4em; line-height: 1.2; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.35rem; margin-top: 1.2rem; }
+    h3 { font-size: 1.1rem; margin-top: 1rem; color: var(--muted); }
+    p, li { color: #d9e2ff; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 8px; margin-top: 8px; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; background: rgba(122,162,255,.15); border: 1px solid rgba(122,162,255,.25); color: var(--ink); font-size: 0.9rem; }
+    .panel { background: var(--panel); border: 1px solid rgba(122,162,255,.2); border-radius: 12px; padding: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(550px, 1fr)); gap: 14px; }
+    figure { margin: 0; background: rgba(255,255,255,.02); border: 1px solid rgba(122,162,255,.2); border-radius: 10px; overflow: hidden; }
+    figure img { width: 100%; height: auto; display: block; }
+    figcaption { font-size: 0.92rem; color: var(--muted); padding: 8px 10px 10px; }
+    .iframe-box { aspect-ratio: 16 / 10; background: #0d1326; border: 1px dashed rgba(163,255,205,.35); border-radius: 10px; overflow: hidden; }
+    iframe { width: 100%; height: 100%; border: 0; }
+    .callout { border-left: 4px solid var(--accent-2); padding: 8px 12px; background: rgba(163,255,205,.06); }
+    .list-tight li { margin-bottom: 6px; }
+    footer { margin-top: 28px; color: var(--muted); font-size: 0.9rem; }
+    code, .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>A Century of U.S. Earthquakes (Checkpoint)</h1>
+      <div class="meta">
+        <div><span class="badge">Project</span> DSC 209R Project 3</div>
+        <div><span class="badge">Team</span> Group&nbsp;7 (Proposed Idea by Dongting)</div>
+        <div><span class="badge">Last Update</span> Nov 2, 2025 12:30 PT</div>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Project Goal (Final Submission)</h2>
+      <p>
+        Build an interactive <strong>D3.js</strong> map of U.S. earthquakes over the past 100 years
+        (including Alaska, Hawaii & Puerto Rico/USVI). Each quake is a dot: <em>larger</em> for higher magnitude and
+        <em>darker</em> for greater intensity. Hover tooltips reveal details. Users can filter by magnitude
+        and by region (states or broader zones).
+      </p>
+      <div class="callout">
+        <strong>Checkpoint Note:</strong> Plots below are quick generated using Python Package (acceptable for the checkpoint). The
+        final interactive will be D3-only.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Dataset</h2>
+      <ul class="list-tight">
+        <li><strong>Source:</strong> USGS ANSS ComCat Earthquake Catalog</li>
+        <li><strong>Time range:</strong> 1925‑01‑01 to 2025‑11‑02 (century scope)</li>
+        <li><strong>Region:</strong> United States incl. Alaska, Hawaii, and territories</li>
+        <li><strong>Checkpoint subset:</strong> <span class="badge">M ≥ 4.5</span> (smaller file, faster EDA)</li>
+        <li><strong>Fields used:</strong> time, latitude, longitude, magnitude, depth, place, region</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Exploratory Graphs (for Checkpoint)</h2>
+      <div class="grid">
+        <figure>
+          <img src="plots/01_annual_counts.png" alt="Annual earthquake counts line chart" />
+          <figcaption><strong>Fig 1.</strong> Annual counts (M≥4.5) — rising long‑run trend, clear spikes.</figcaption>
+        </figure>
+
+        <figure>
+          <img src="plots/02b_annual_by_region_lines.png" alt="Stacked area chart of annual counts by region" />
+          <figcaption><strong>Fig 2.</strong> Counts by region — Alaska dominates; region filters will be essential.</figcaption>
+        </figure>
+
+        <figure>
+          <img src="plots/03_magnitude_hist.png" alt="Histogram of magnitudes" />
+          <figcaption><strong>Fig 3.</strong> Magnitude distribution — heavy right‑skew; big events are rare.</figcaption>
+        </figure>
+
+        <figure>
+          <img src="plots/04_depth_by_region_box.png" alt="Boxplot of depth by region" />
+          <figcaption><strong>Fig 4.</strong> Depth by region — Alaska deeper overall; others mostly shallow.</figcaption>
+        </figure>
+
+        <figure>
+          <img src="plots/05_spatial_hexbin.png" alt="Hexbin density of epicenters by lon/lat" />
+          <figcaption><strong>Fig 5.</strong> Spatial density — West Coast &amp; Aleutians are clear hot spots.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Fig 6. Interactive Preview</h2>
+      <p>A Preview of Plotly, it's still early-stage map & data and has not been transformed yet.</p>
+      <div class="iframe-box">
+        <iframe src="plots/06_epicenter_map_interactive.html" title="Interactive epicenter map"></iframe>
+      </div>
+      <p style="margin-top:8px">
+        Direct link: <a href="plots/06_epicenter_map_interactive.html">open the interactive map</a>.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Planned Interactions (Final D3.js)</h2>
+      <ul class="list-tight">
+        <li>Circle <strong>size</strong> ∝ magnitude; circle <strong>color</strong> encodes intensity.</li>
+        <li><strong>Hover tooltips</strong>: magnitude, place, date, depth.</li>
+        <li><strong>Filters</strong>: magnitude range slider; region picker (states &amp; zones).</li>
+        <li>Optional zoom/pan and a size/color <strong>legend</strong>.</li>
+      </ul>
+    </section>
+
+  </div>
+</body>
+</html>
