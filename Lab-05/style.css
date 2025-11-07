@@ -1,0 +1,331 @@
+body {
+  /* Set line height to 1.5 times the font size
+	   and use the OS’s UI font as the website font
+	 */
+  font: 100%/1.5 system-ui;
+}
+
+/* --- Step 1: Page layout --- */
+/* 1. Limit line length and center the page */
+html { color-scheme: light dark; }
+
+html {
+  --page-max: 100ch; /* custom property for max line length */
+}
+
+body {
+  max-width: var(--page-max);   /* limit line length */
+  margin-inline: auto;          /* center the page */
+  padding-inline: 1rem;         /* side gutters on small screens */
+}
+
+/* 2. Make images, videos, SVGs, and canvases responsive */
+img, video, svg, canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;   /* avoids stray gaps below images */
+}
+
+/* --- Step 2: Navigation bar --- */
+:root {
+  /* tweak this later if you want a different accent */
+  --accent: oklch(0.525 0.204 265.44); /* a pleasant blue */
+  --line: oklch(0.848 0.128 74.021);   /* subtle gray-blue divider */
+}
+
+nav {
+    display: flex;                 /* lay out links in a row */
+    margin-bottom: 1rem;           /* space below the bar */
+    border-bottom: 1px solid var(--line);
+    background: canvas;
+    color: canvastext;
+}
+
+nav a {
+    flex: 1;                       /* equal width items */
+    text-align: center;            /* center labels */
+    text-decoration: none;         /* remove underline */
+    color: inherit;                /* use page text color */
+    padding: .5rem 0;              /* bigger tap/click target */
+    border-bottom: .4rem solid transparent; /* for hover/current underline */
+}
+
+nav a.current,
+nav a[aria-current="page"] {
+  border-bottom-color: var(--line);
+  padding-bottom: calc(.5rem - .4rem); /* keep height consistent */
+}
+
+nav a:hover {
+  border-bottom-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, canvas 85%);
+}
+
+
+/* --- Step 3: Contact form layout (Grid + subgrid) --- */
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;  /* label column + field column */
+  gap: 1rem;                        /* row/col spacing */
+  align-items: center;
+}
+
+form label {
+  /* Each label becomes a mini-layout that inherits the form's columns */
+  display: grid;
+  grid-template-columns: subgrid;   /* use the parent (form) columns */
+  grid-column: 1 / -1;              /* each label spans the full row */
+  gap: .5rem;
+}
+
+form label span {
+  grid-column: 1;                   /* label text on the left */
+  align-self: center;
+}
+
+form input,
+form textarea,
+form button {
+  font: inherit;                    /* match site typography */
+}
+
+form input,
+form textarea {
+  grid-column: 2;                   /* controls on the right */
+  width: 100%;
+  box-sizing: border-box;
+  padding: .5rem .6rem;
+  border: 1px solid oklch(0.848 0.128 74.021);
+  border-radius: .25rem;
+}
+
+form textarea { resize: vertical; }
+
+form button {
+  grid-column: 1 / -1;              /* button spans both columns */
+  justify-self: start;
+  padding: .55rem 1rem;
+  border: 1px solid oklch(85% 0.03 200);
+  border-radius: .35rem;
+  background: white;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+form button:hover { background: color-mix(in oklab, var(--accent) 10%, canvas); }
+
+/* --- Step 4: Projects grid --- */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1rem;
+}
+
+/* Each card aligns its inner pieces to a shared rhythm */
+.projects > article {
+  display: grid;
+  grid-template-rows: subgrid; /* align headings, images, text across rows */
+  grid-row: span 3;            /* three rows per card: h2, img, p */
+  gap: .5rem;
+}
+
+.projects h2 { margin: 0; line-height: 1.2; }
+.projects img { width: 100%; height: auto; display: block; }
+
+
+/* --- Step 5: CV / resume styles --- */
+
+/* Layout rhythm */
+.cv {
+  display: grid;
+  gap: 1.25rem;
+}
+.cv section {
+  display: grid;
+  gap: .5rem;
+}
+
+/* Headings */
+.cv h2 {
+  border-bottom: 1px solid oklch(0.525 0.204 265.44);
+  padding-bottom: .25rem;
+  margin: 0;
+}
+.cv h3 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Meta rows (title + dates/place) */
+.cv article > p:first-of-type {
+  margin: 0 0 .25rem 0;
+  color: oklch(0.805 0 89.876);
+  font-size: 0.95em;
+}
+
+/* Lists */
+.cv ul {
+  margin: 0 0 0 1.25rem;
+}
+.cv .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cv .tags li {
+  border: 1px solid oklch(0.525 0.204 265.44);
+  border-radius: .4rem;
+  padding: .2rem .5rem;
+  font-size: .95em;
+}
+
+/* Compact spacing between stacked articles */
+.cv article + article {
+  margin-top: .75rem;
+}
+
+/* Print-friendly tweaks (optional but nice) */
+@media print {
+  nav { display: none; }
+  a { color: #bfbfbf; text-decoration: none; }
+  body { padding-inline: 0; }
+  .cv h2 { border-color: #bfbfbf; }
+}
+
+/* Github Sections */
+.github-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  align-items: start;
+}
+
+.repo-card {
+  border: 1px solid var(--line, #ddd);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--card, Canvas);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
+}
+
+.repo-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+}
+
+.repo-card p {
+  margin: 0 0 0.75rem 0;
+  color: var(--muted, #444);
+}
+
+.repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+#profile-stats dl {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .5rem 1rem;
+}
+#profile-stats dt { grid-row: 1; font-weight: 600; }
+#profile-stats dd { grid-row: 2; margin: 0; }
+
+/* --- GitHub blocks: tiny polish --- */
+.github-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+.repo-card {
+  border: 1px solid var(--line, #303036);
+  border-radius: 12px;
+  padding: 1rem;
+  background: var(--card, color-mix(in oklab, Canvas 94%, #000 6%));
+  box-shadow: 0 1px 6px rgb(0 0 0 / 10%);
+}
+.repo-card h3 { margin: 0 0 .5rem; font-size: 1.05rem; }
+.repo-card p { margin: 0 0 .75rem; opacity: .9; }
+.repo-meta {
+  display: flex; gap: .9rem; padding: 0; margin: 0; list-style: none;
+  font-size: .9rem; opacity: .9;
+}
+
+/* Profile stats as a neat 4-up */
+#profile-stats dl {
+  display: grid; gap: .25rem 1rem;
+  grid-template-columns: repeat(4, minmax(8rem, 1fr));
+}
+#profile-stats dt { font-weight: 600; opacity: .85; }
+#profile-stats dd { margin: 0 0 .75rem; }
+@media (max-width: 720px) {
+  #profile-stats dl { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Lab 05 – Step 1 pie chart sizing */
+#projects-pie-plot {
+  max-width: 20rem;
+  margin-block: 2rem;
+  overflow: visible; /* keeps wedges fully visible */
+}
+
+/* Lab 5 Step 2 — Legend layout + swatches */
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border, #ddd);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
+  gap: 0.75rem 1rem; /* grid gap */
+}
+
+.legend li {
+  display: flex;            /* vertically center swatch + text */
+  align-items: center;
+  gap: 0.5rem;              /* li’s internal gap smaller than the grid gap */
+}
+
+.legend .swatch {
+  display: inline-block;    /* allow width/height */
+  width: 0.9em;
+  aspect-ratio: 1 / 1;      /* square */
+  background: var(--color); /* set via inline style from JS */
+  border-radius: 0.2em;
+}
+
+/* Lab 5 Step 2.3 — place pie and legend side-by-side */
+.pie-wrap {
+  display: flex;
+  gap: 1.25rem;
+  align-items: start;
+}
+.pie-wrap .legend { flex: 1; } /* legend uses remaining width */
+
+/* Lab 5 Step 4 — Search bar styles */
+.searchBar { max-width: 28rem; width: 100%; padding: .6rem .8rem; border: 1px solid var(--border,#ddd); border-radius: .5rem; margin-block: 1rem; }
+.search-hint { margin-top: .25rem; font-size: .9rem; color: var(--muted, #555); }
+
+/* Lab 05 — Step 5: interactive pie + legend */
+#projects-pie-plot .slice {
+  cursor: pointer;
+  transition: transform .12s ease, opacity .12s ease, stroke-width .12s ease;
+  transform-box: fill-box;   /* so transforms use the path’s box */
+  transform-origin: 50% 50%;
+}
+#projects-pie-plot .slice.hover { transform: scale(1.035); }
+#projects-pie-plot .slice.active { stroke: #111; stroke-width: 2px; }
+#projects-pie-plot .slice.muted { opacity: .45; }
+
+.legend li { cursor: pointer; user-select: none; }
+.legend li.active { font-weight: 600; text-decoration: underline; }
+.legend li.muted { opacity: .55; }
