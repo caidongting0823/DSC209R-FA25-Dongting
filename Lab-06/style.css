@@ -329,3 +329,130 @@ form button:hover { background: color-mix(in oklab, var(--accent) 10%, canvas); 
 .legend li { cursor: pointer; user-select: none; }
 .legend li.active { font-weight: 600; text-decoration: underline; }
 .legend li.muted { opacity: .55; }
+
+/* Lab 06 – summary stats block */
+.stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .4rem 1rem;
+  padding: .75rem;
+  border: 1px solid var(--line, #ddd);
+  border-radius: .5rem;
+  max-width: 42rem;
+}
+.stats dt { font-weight: 600; opacity: .85; }
+.stats dd { margin: 0; }
+
+/* ============= Lab 06 — Fancy stats card ============= */
+.stats {
+  /* themeable tokens */
+  --card-bg: #ffffff;
+  --line: #e8dfd6;
+  --text: #191919;
+  --accent: #d48b27;
+
+  background:
+    linear-gradient(180deg, rgba(212,139,39,.07), transparent 60%),
+    var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  padding: 1rem 1.25rem;
+
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 1.25rem;
+  row-gap: .35rem;
+  max-width: 48rem;
+  line-height: 1.25;
+}
+
+.stats dt {
+  font-size: .92rem;
+  letter-spacing: .02em;
+  color: var(--text);
+  opacity: .8;
+  /* top/bottom rhythm + separators from row 2 onward */
+  padding-top: .35rem;
+  margin-top: .35rem;
+  border-top: 1px dashed transparent;
+}
+.stats dd {
+  margin: 0;
+  justify-self: end;   /* right-align numbers */
+  align-self: baseline;
+  padding-top: .35rem;
+  margin-top: .35rem;
+  border-top: 1px dashed transparent;
+}
+
+/* draw separators on rows after the first */
+.stats > dt:nth-of-type(n+2),
+.stats > dd:nth-of-type(n+2) {
+  border-top-color: var(--line);
+}
+
+.stats dd.num {
+  font: 600 1.6rem/1.1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  font-variant-numeric: tabular-nums; /* nice lining-up digits */
+  color: var(--text);
+}
+
+.stats abbr[title] {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+
+/* Small-screen tune-up */
+@media (max-width: 640px) {
+  .stats {
+    grid-template-columns: 1fr auto;
+    border-radius: 12px;
+  }
+  .stats dd.num { font-size: 1.25rem; }
+}
+
+/* Dark mode (auto) */
+@media (prefers-color-scheme: dark) {
+  .stats {
+    --card-bg: #121212;
+    --line: #2a2a2a;
+    --text: #eaeaea;
+    --accent: #f6c177;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  }
+}
+
+/* Lab 06 — scatterplot aids */
+.gridlines line { stroke: var(--line, #ddd); stroke-opacity: .6; shape-rendering: crispEdges; }
+.gridlines path { display: none; }   /* hide the axis baseline for gridlines */
+.dots circle { vector-effect: non-scaling-stroke; }
+
+/* Tooltip content layout (reusable) */
+dl.info{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:.25rem .75rem;
+  padding:.6rem .8rem;
+  border:1px solid var(--line,#ddd);
+  border-radius:12px;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  backdrop-filter:blur(6px);
+  transition-duration:500ms;
+  transition-property:opacity,visibility;
+}
+dl.info dt{margin:0; font-size:.8rem; opacity:.65}
+dl.info dd{margin:0; font-weight:600}
+
+/* Make it behave like a tooltip */
+.tooltip{ position:fixed; top:1em; left:1em; pointer-events:none; }
+dl.info[hidden]:not(:hover,:focus-within){ opacity:0; visibility:hidden }
+
+/* Hover animation for dots */
+.dots circle{
+  transition:200ms;
+  transform-origin:center;
+  transform-box:fill-box;
+}
+.dots circle:hover{ transform:scale(1.5) }
