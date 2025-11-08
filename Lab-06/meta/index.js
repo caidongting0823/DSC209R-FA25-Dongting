@@ -80,80 +80,88 @@ function renderCommitInfo(data, commits) {
 
 
 function renderScatterPlot(data, commits) {
-  // ---- Step 2 dimensions + SVG ----
-  const width = 1000, height = 600; // tutorial dims
+  const width = 1000, height = 600;
   const svg = d3.select('#chart')
     .append('svg')
     .attr('viewBox', `0 0 ${width} ${height}`)
-    .style('overflow', 'visible'); // so axes labels aren’t clipped
-  // (Dims + SVG per lab.) :contentReference[oaicite:1]{index=1}
+    .style('overflow', 'visible');
 
-  // ---- Scales: x = time (dates), y = hour-of-day ----
+  // Scales
   const xScale = d3.scaleTime()
     .domain(d3.extent(commits, d => d.datetime))
     .range([0, width])
-    .nice(); // extend to “nice” ticks
+    .nice();
   const yScale = d3.scaleLinear().domain([0, 24]).range([height, 0]);
-  // (Lab explains time scale + extent + nice, and linear for [0,24].) :contentReference[oaicite:2]{index=2}
 
-  // ---- Margins + usable area, then update ranges ----
+  // Margins
   const margin = { top: 10, right: 10, bottom: 30, left: 36 };
-  const usableArea = {
+  const usable = {
+    left: margin.left,
     top: margin.top,
     right: width - margin.right,
     bottom: height - margin.bottom,
-    left: margin.left,
     width: width - margin.left - margin.right,
     height: height - margin.top - margin.bottom,
   };
-  xScale.range([usableArea.left, usableArea.right]);
-  yScale.range([usableArea.bottom, usableArea.top]);
-  // (Margin pattern + range update per Step 2.2.) :contentReference[oaicite:3]{index=3}
+  xScale.range([usable.left, usable.right]);
+  yScale.range([usable.bottom, usable.top]);
 
-  // ---- Gridlines (add BEFORE axes) ----
-  const gridlines = svg.append('g')
+  // Gridlines (behind everything)
+  svg.append('g')
     .attr('class', 'gridlines')
-    .attr('transform', `translate(${usableArea.left},0)`);
-  gridlines.call(d3.axisLeft(yScale).tickFormat('').tickSize(-usableArea.width));
-  // (Add gridlines first via an axis with empty labels + full-width ticks.) :contentReference[oaicite:4]{index=4}
+    .attr('transform', `translate(${usable.left},0)`)
+    .call(d3.axisLeft(yScale).tickFormat('').tickSize(-usable.width));
 
-  // ---- Dots ----
+  // ✅ Re-add the dots layer
   const dots = svg.append('g').attr('class', 'dots');
+
+  // Radius scale (area ∝ lines)
+  const [minLines, maxLines] = d3.extent(commits, d => d.totalLines || 0);
+  const rScale = d3.scaleSqrt()
+    .domain([minLines ?? 0, Math.max(1, maxLines ?? 1)])
+    .range([3, 22]);
+
+  // Sort so small dots are drawn last (on top)
+  const sortedCommits = d3.sort(
+    commits,
+    (a, b) => d3.descending(a.totalLines, b.totalLines)
+  );
+
+  // Dots
   dots.selectAll('circle')
-    .data(commits)
+    .data(sortedCommits)
     .join('circle')
     .attr('cx', d => xScale(d.datetime))
     .attr('cy', d => yScale(d.hourFrac))
-    .attr('r', 5)
+    .attr('r',  d => rScale(d.totalLines))
     .attr('fill', 'steelblue')
+    .style('fill-opacity', 0.7)
     .on('mouseenter', (event, commit) => {
-        renderTooltipContent(commit);
-        updateTooltipVisibility(true);
-        updateTooltipPosition(event);
+      d3.select(event.currentTarget).style('fill-opacity', 1);
+      renderTooltipContent(commit);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
     })
-    .on('mousemove', (event) => {
-        updateTooltipPosition(event);
-    })
-    .on('mouseleave', () => {
-        updateTooltipVisibility(false);
+    .on('mousemove', (event) => updateTooltipPosition(event))
+    .on('mouseleave', (event) => {
+      d3.select(event.currentTarget).style('fill-opacity', 0.7);
+      updateTooltipVisibility(false);
     });
 
-
-  // ---- Axes ----
+  // Axes
   const xAxis = d3.axisBottom(xScale);
   const yAxis = d3.axisLeft(yScale)
-    .tickFormat(d => String(d % 24).padStart(2, '0') + ':00'); // 00:00…23:00
-  svg.append('g')
-    .attr('transform', `translate(0,${usableArea.bottom})`)
-    .attr('class', 'x-axis')
-    .call(xAxis);
-  svg.append('g')
-    .attr('transform', `translate(${usableArea.left},0)`)
-    .attr('class', 'y-axis')
-    .call(yAxis);
-  // (Create axes with margins + HH:00 tick format.) :contentReference[oaicite:6]{index=6} :contentReference[oaicite:7]{index=7}
+    .tickFormat(d => String(d % 24).padStart(2, '0') + ':00');
 
-  // If dots sit “outside” the axes, check the render order (gridlines → dots → axes). :contentReference[oaicite:8]{index=8}
+  svg.append('g')
+    .attr('class', 'x-axis')
+    .attr('transform', `translate(0,${usable.bottom})`)
+    .call(xAxis);
+
+  svg.append('g')
+    .attr('class', 'y-axis')
+    .attr('transform', `translate(${usable.left},0)`)
+    .call(yAxis);
 }
 
 function renderTooltipContent(commit){
