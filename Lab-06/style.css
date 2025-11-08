@@ -456,3 +456,15 @@ dl.info[hidden]:not(:hover,:focus-within){ opacity:0; visibility:hidden }
   transform-box:fill-box;
 }
 .dots circle:hover{ transform:scale(1.5) }
+
+@keyframes marching-ants { to { stroke-dashoffset: -8; } }
+
+.selection{
+  fill-opacity: .10;
+  stroke: black;
+  stroke-opacity: .7;
+  stroke-dasharray: 5 3;
+  animation: marching-ants 2s linear infinite;
+}
+
+circle.selected { fill: #ff6b6b; }
