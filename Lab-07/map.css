@@ -25,3 +25,38 @@ body {
   height: 100%;
   pointer-events: none; /* so you can still pan/zoom the map */
 }
+
+/* Shared color vars for circles + legend swatches */
+#map svg circle,
+.legend > div {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+}
+
+#map svg circle {
+  pointer-events: auto; /* override svg's pointer-events: none so tooltips work */
+  fill: var(--color);
+}
+
+/* Legend layout */
+.legend {
+  display: flex;
+  gap: 1px;
+  margin-block: 1rem;
+  border-radius: 999px;
+  overflow: hidden;
+  font-size: 0.85rem;
+}
+
+.legend > div {
+  flex: 1;
+  padding: 0.25rem 0.75rem;
+  text-align: center;
+  color: white;
+}
+
