@@ -1,20 +1,9 @@
-html,
-body {
-  margin: 0;
-  padding: 5;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-}
-
 #map {
   position: relative; /* important for the absolutely positioned SVG */
-  width: 100%; /* Adjust width to your desired size */
-  height: 100%; /* Adjust height to your desired size */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
-  border-radius: 8px; /* Optional: rounded corners */
+  width: 100%;
+  height: min(70vh, 40rem); /* or 60vh if you prefer */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 /* SVG overlay that sits on top of the Mapbox canvas */
@@ -58,5 +47,6 @@ body {
   padding: 0.25rem 0.75rem;
   text-align: center;
   color: white;
+  background-color: var(--color);
 }
 
