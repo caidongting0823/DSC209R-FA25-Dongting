@@ -2,6 +2,16 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 let xScale, yScale; // so isCommitSelected() can access them
 
+// Slider / evolution state (Lab 8 Step 1)
+let commitProgress = 100;      // 0–100 slider value
+let commitMaxTime = null;      // Date object for current slider position
+let timeScale = null;          // maps datetime -> [0,100] and back
+let filteredCommits = null;    // subset of commits up to commitMaxTime
+
+// keep references so handlers outside init() can use them
+let allData = null;
+let allCommits = null;
+
 // ---- Step 1.1: Read & type-convert the CSV (lab spec) ----
 async function loadData() {
   const data = await d3.csv('./loc.csv', (row) => ({
@@ -133,7 +143,7 @@ function renderScatterPlot(data, commits) {
 
   // Dots
   dots.selectAll('circle')
-    .data(sortedCommits)
+    .data(sortedCommits, d => d.id)
     .join('circle')
     .attr('cx', d => xScale(d.datetime))
     .attr('cy', d => yScale(d.hourFrac))
@@ -191,8 +201,65 @@ function renderScatterPlot(data, commits) {
 // Keep dots hoverable after the overlay is inserted
 svg.selectAll('.dots, .overlay ~ *').raise();
 
-
 }
+
+function updateScatterPlot(data, commits) {
+  const width = 1000, height = 600;
+  const margin = { top: 10, right: 10, bottom: 30, left: 36 };
+  const usable = {
+    left: margin.left,
+    top: margin.top,
+    right: width - margin.right,
+    bottom: height - margin.bottom,
+    width: width - margin.left - margin.right,
+    height: height - margin.top - margin.bottom,
+  };
+
+  // reuse existing SVG and scales
+  const svg = d3.select('#chart').select('svg');
+
+  // update x domain to only show commits up to commitMaxTime
+  xScale.domain(d3.extent(commits, d => d.datetime));
+
+  // new radius scale for the current subset
+  const [minLines, maxLines] = d3.extent(commits, d => d.totalLines || 0);
+  const rScale = d3.scaleSqrt()
+    .domain([minLines ?? 0, Math.max(1, maxLines ?? 1)])
+    .range([3, 22]);
+
+  // update x-axis in place
+  const xAxis = d3.axisBottom(xScale);
+  svg.select('g.x-axis').call(xAxis);
+
+  // re-bind dots to the filtered commits
+  const dots = svg.select('g.dots');
+
+  const sortedCommits = d3.sort(
+    commits,
+    (a, b) => d3.descending(a.totalLines, b.totalLines)
+  );
+
+  dots.selectAll('circle')
+    .data(sortedCommits, d => d.id)              // key by commit id (1.3)
+    .join('circle')
+    .attr('cx', d => xScale(d.datetime))
+    .attr('cy', d => yScale(d.hourFrac))
+    .attr('r',  d => rScale(d.totalLines))
+    .attr('fill', 'steelblue')
+    .style('fill-opacity', 0.7)
+    .on('mouseenter', (event, commit) => {
+      d3.select(event.currentTarget).style('fill-opacity', 1);
+      renderTooltipContent(commit);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
+    })
+    .on('mousemove', (event) => updateTooltipPosition(event))
+    .on('mouseleave', (event) => {
+      d3.select(event.currentTarget).style('fill-opacity', 0.7);
+      updateTooltipVisibility(false);
+    });
+}
+
 
 function renderTooltipContent(commit){
   const link  = document.getElementById('commit-link');
@@ -277,14 +344,67 @@ function renderLanguageBreakdown(selection, commits){
   }
 }
 
+function onTimeSliderChange() {
+  if (!allData || !allCommits || !timeScale) return;
+
+  const slider = document.querySelector('#commit-progress');
+  const timeEl = document.querySelector('#commit-progress-time');
+  if (!slider || !timeEl) return;
+
+  // 1) read slider & update progress
+  commitProgress = Number(slider.value);
+
+  // 2) convert 0–100 value back to a Date
+  commitMaxTime = timeScale.invert(commitProgress);
+
+  // 3) update the label text
+  timeEl.textContent = commitMaxTime.toLocaleString('en', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  });
+
+  // 4) filter commits up to commitMaxTime
+  filteredCommits = allCommits.filter(d => d.datetime <= commitMaxTime);
+
+  // 5) update the existing scatter plot
+  updateScatterPlot(allData, filteredCommits);
+}
+
+
+
+
 
 // ---- Init wrapper (avoids top-level await) ----
 async function init() {
   try {
-    const data = await loadData();                 // Step 1.1 :contentReference[oaicite:2]{index=2}
-    const commits = processCommits(data);          // Step 1.2 :contentReference[oaicite:3]{index=3}
-    renderCommitInfo(data, commits);               // Step 1.3 :contentReference[oaicite:4]{index=4}
-    renderScatterPlot(data, commits);              // Step 2     :contentReference[oaicite:5]{index=5}
+    const data = await loadData();
+    const commits = processCommits(data);
+    renderCommitInfo(data, commits);
+    renderScatterPlot(data, commits);
+
+    // --- Lab 8 Step 1: set up evolution slider state ---
+    allData = data;
+    allCommits = commits;
+
+    // timeScale maps datetime -> 0–100, we invert it for slider->time
+    timeScale = d3.scaleTime()
+      .domain([
+        d3.min(allCommits, d => d.datetime),
+        d3.max(allCommits, d => d.datetime),
+      ])
+      .range([0, 100]);
+
+    // initial max time = 100% (latest commit)
+    commitMaxTime = timeScale.invert(commitProgress);
+    filteredCommits = allCommits.filter(d => d.datetime <= commitMaxTime);
+
+    // wire up slider
+    const slider = document.querySelector('#commit-progress');
+    if (slider) {
+      slider.addEventListener('input', onTimeSliderChange);
+      // initialize label & plot once on load
+      onTimeSliderChange();
+    }
 
     // expose for quick debugging in console
     window.metaDebug = { data, commits };
@@ -294,6 +414,7 @@ async function init() {
     box.innerHTML = `<p style="color:#c00">Failed to load meta/loc.csv. Check the path and see console for details.</p>`;
   }
 }
+
 
 // make sure DOM exists, then run
 if (document.readyState === 'loading') {

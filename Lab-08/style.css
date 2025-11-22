@@ -457,6 +457,15 @@ dl.info[hidden]:not(:hover,:focus-within){ opacity:0; visibility:hidden }
 }
 .dots circle:hover{ transform:scale(1.5) }
 
+#chart .dots circle {
+  /* whatever transitions you already had, e.g.: */
+  transition: r 200ms ease-out;
+
+  @starting-style {
+    r: 0;
+  }
+}
+
 @keyframes marching-ants { to { stroke-dashoffset: -8; } }
 
 .selection{

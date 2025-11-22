@@ -13,6 +13,21 @@
       <h1>Meta</h1>
       <p>This page will show summary stats & charts about this repo.</p>
 
+      <!-- Step 1: time slider for evolution visualization -->
+      <div id="commit-filter">
+        <label for="commit-progress">
+          Show commits until:
+          <input
+            id="commit-progress"
+            type="range"
+            min="0"
+            max="100"
+            value="100"
+          />
+          <time id="commit-progress-time"></time>
+        </label>
+      </div>
+
       <!-- Step 1 will render stats here -->
       <div id="stats"></div>
 
