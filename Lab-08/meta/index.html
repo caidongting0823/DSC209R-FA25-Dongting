@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Meta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header id="site-header"></header>
+
+    <main class="container">
+      <h1>Meta</h1>
+      <p>This page will show summary stats & charts about this repo.</p>
+
+      <!-- Step 1 will render stats here -->
+      <div id="stats"></div>
+
+      <h2>Commits by time of day</h2>
+      <div id="chart"></div>
+
+      <dl id="commit-tooltip" class="info tooltip" hidden>
+      <dt>Commit</dt><dd><a id="commit-link" target="_blank" rel="noopener"></a></dd>
+      <dt>Date</dt><dd id="commit-date"></dd>
+      <dt>Time</dt><dd id="commit-time"></dd>
+      <dt>Author</dt><dd id="commit-author"></dd>
+      <dt>Lines</dt><dd id="commit-lines"></dd>
+      </dl>
+
+      <!-- Later steps will render charts below -->
+      <div id="charts"></div>
+
+      <p id="selection-count">No commits selected</p>
+      <dl id="language-breakdown" class="stats"></dl>
+
+    </main>
+
+    <script src="../global.js" type="module"></script>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>
