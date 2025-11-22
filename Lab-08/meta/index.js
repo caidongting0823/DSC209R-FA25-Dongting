@@ -313,10 +313,24 @@ function renderSelectionCount(selection, commits){
   const selected = selection
     ? commits.filter(d => isCommitSelected(selection, d))
     : [];
+
   const el = document.querySelector('#selection-count');
-  el.textContent = `${selected.length || 'No'} commits selected`;
+  const panel = document.querySelector('#selection-panel');
+
+  if (!el) return selected;
+
+  if (selected.length === 0) {
+    el.textContent = 'Select commits in the chart above to view details.';
+    if (panel) panel.classList.add('empty');
+  } else {
+    const n = selected.length;
+    el.textContent = `${n} commit${n === 1 ? '' : 's'} selected`;
+    if (panel) panel.classList.remove('empty');
+  }
+
   return selected;
 }
+
 
 function renderLanguageBreakdown(selection, commits){
   const selected = selection

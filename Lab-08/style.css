@@ -690,3 +690,31 @@ circle.selected { fill: #ff6b6b; }
 #files > div.is-active .loc {
   box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 40%, Canvas 60%);
 }
+
+/* Lab 8 – selection panel footer */
+#selection-panel {
+  margin-top: 0.75rem;
+  flex: 0 0 auto;
+  min-height: 5.5rem;             /* space to center the message */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#selection-count {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted, #555);
+}
+
+/* When no commits are selected, treat it as an empty state */
+#selection-panel.empty {
+  justify-content: center;        /* vertical centering within min-height */
+  align-items: center;            /* horizontal centering */
+  text-align: center;
+}
+
+#selection-panel.empty #selection-count {
+  font-style: italic;
+  opacity: 0.85;
+}
