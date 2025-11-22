@@ -11,42 +11,55 @@
 
     <main class="container">
       <h1>Meta</h1>
-      <p>This page will show summary stats & charts about this repo.</p>
+    <p>This page will show summary stats & charts about this repo.</p>
 
-      <!-- Step 1: time slider for evolution visualization -->
-      <div id="commit-filter">
-        <label for="commit-progress">
-          Show commits until:
-          <input
-            id="commit-progress"
-            type="range"
-            min="0"
-            max="100"
-            value="100"
-          />
-          <time id="commit-progress-time"></time>
-        </label>
+    <!-- Step 1: time slider for evolution visualization -->
+    <div id="commit-filter">
+      <label for="commit-progress">
+        Show commits until:
+        <input
+          id="commit-progress"
+          type="range"
+          min="0"
+          max="100"
+          value="100"
+        />
+        <time id="commit-progress-time"></time>
+      </label>
+    </div>
+
+    <!-- Step 1 will render stats here -->
+    <div id="stats"></div>
+
+    <!-- Step 3: Scrollytelling layout -->
+    <div id="scrolly-1">
+      <div id="scatter-story">
+        <!-- Commit narrative steps will be generated here -->
       </div>
 
-      <!-- Step 1 will render stats here -->
-      <div id="stats"></div>
+      <div id="scatter-plot">
+        <h2>Commits by time of day</h2>
 
-      <h2>Commits by time of day</h2>
-      <div id="chart"></div>
+        <div id="chart"></div>
 
-      <dl id="commit-tooltip" class="info tooltip" hidden>
-      <dt>Commit</dt><dd><a id="commit-link" target="_blank" rel="noopener"></a></dd>
-      <dt>Date</dt><dd id="commit-date"></dd>
-      <dt>Time</dt><dd id="commit-time"></dd>
-      <dt>Author</dt><dd id="commit-author"></dd>
-      <dt>Lines</dt><dd id="commit-lines"></dd>
-      </dl>
+        <dl id="commit-tooltip" class="info tooltip" hidden>
+          <dt>Commit</dt><dd><a id="commit-link" target="_blank" rel="noopener"></a></dd>
+          <dt>Date</dt><dd id="commit-date"></dd>
+          <dt>Time</dt><dd id="commit-time"></dd>
+          <dt>Author</dt><dd id="commit-author"></dd>
+          <dt>Lines</dt><dd id="commit-lines"></dd>
+        </dl>
 
-      <!-- Later steps will render charts below -->
-      <div id="charts"></div>
+        <p id="selection-count">No commits selected</p>
+        <dl id="language-breakdown" class="stats"></dl>
+      </div>
+    </div>
 
-      <p id="selection-count">No commits selected</p>
-      <dl id="language-breakdown" class="stats"></dl>
+    <!-- Later steps will render charts below -->
+    <div id="charts"></div>
+
+    <!-- Lab 8 Step 2: files race now lives below the scrolly -->
+    <dl id="files"></dl>
 
     </main>
 

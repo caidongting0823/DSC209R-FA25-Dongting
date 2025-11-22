@@ -1,5 +1,7 @@
 // meta/index.js
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+import scrollama from 'https://cdn.jsdelivr.net/npm/scrollama@3.2.0/+esm';
+
 let xScale, yScale; // so isCommitSelected() can access them
 
 // Slider / evolution state (Lab 8 Step 1)
@@ -11,6 +13,9 @@ let filteredCommits = null;    // subset of commits up to commitMaxTime
 // keep references so handlers outside init() can use them
 let allData = null;
 let allCommits = null;
+
+// Lab 8 Step 2 – color by technology
+const lineColorScale = d3.scaleOrdinal(d3.schemeTableau10);
 
 // ---- Step 1.1: Read & type-convert the CSV (lab spec) ----
 async function loadData() {
@@ -344,6 +349,115 @@ function renderLanguageBreakdown(selection, commits){
   }
 }
 
+
+function updateFileDisplay(filteredCommits) {
+  // If #files does not exist, bail out gracefully
+  const filesRoot = d3.select('#files');
+  if (filesRoot.empty()) return;
+
+  // No commits? Clear everything.
+  if (!filteredCommits || filteredCommits.length === 0) {
+    filesRoot.html('');
+    return;
+  }
+
+  // 1) Gather all lines from the filtered commits
+  const lines = filteredCommits.flatMap(d => d.lines);
+
+  // 2) Group by file and sort by number of lines (desc)
+  let files = d3
+    .groups(lines, d => d.file)
+    .map(([name, lines]) => ({ name, lines }))
+    .sort((a, b) => b.lines.length - a.lines.length);
+
+  // 3) Bind one <div> per file inside #files
+  const filesContainer = filesRoot
+    .selectAll('div')
+    .data(files, d => d.name)
+    .join(
+      // Runs only when a new file block is created
+      enter =>
+        enter.append('div').call(div => {
+          // <dt> with <code> and <small> for counts
+          div.append('dt').html('<code></code><small></small>');
+          // <dd> will hold our unit dots
+          div.append('dd');
+        })
+    );
+
+  // 4) Update filename + line counts
+  filesContainer.select('dt > code').text(d => d.name);
+  filesContainer
+    .select('dt > small')
+    .text(d => `${d.lines.length} lines`);
+
+  // 5) For each file, create one dot per line → unit visualization
+  const lineDots = filesContainer
+    .select('dd')
+    .selectAll('div')
+    .data(d => d.lines)
+    .join('div')
+    .attr('class', 'loc')
+    .style('--color', d => lineColorScale(d.type ?? 'other'));
+}
+
+function renderCommitStory(commits) {
+  const story = d3.select('#scatter-story');
+
+  const fmtDate = new Intl.DateTimeFormat('en', { dateStyle: 'medium' });
+  const fmtTime = new Intl.DateTimeFormat('en', { timeStyle: 'short' });
+
+  const steps = story
+    .selectAll('.step')
+    .data(commits, d => d.id)
+    .join('div')
+    .attr('class', 'step');
+
+  steps.html((d, i) => {
+    // For this commit, count lines by file
+    const fileRollups = d3.rollups(
+      d.lines,
+      v => v.length,
+      l => l.file
+    ).sort((a, b) => d3.descending(a[1], b[1]));
+
+    const fileCount = fileRollups.length;
+
+    // Top 1–2 files to mention in the narrative
+    const top = fileRollups.slice(0, 2);
+    const topFilesMarkup = top
+      .map(([name, count]) =>
+        `<span class="step-file">
+           <code>${name}</code>
+           <span class="step-file-lines">${count} line${count === 1 ? '' : 's'}</span>
+         </span>`
+      )
+      .join(', ');
+
+    return `
+      <p class="step-meta">
+        <span class="step-index">Commit ${i + 1} of ${commits.length}</span>
+        <span class="step-datetime">
+          ${fmtDate.format(d.datetime)} · ${fmtTime.format(d.datetime)}
+        </span>
+      </p>
+
+      <p class="step-title">
+        <a href="${d.url}" target="_blank" rel="noopener">
+          ${d.id.slice(0, 7)}
+        </a>
+      </p>
+
+      <p class="step-body">
+        Updated <strong>${d.totalLines}</strong> lines across
+        <strong>${fileCount}</strong> file${fileCount === 1 ? '' : 's'}.
+        ${topFilesMarkup ? `Key files: ${topFilesMarkup}.` : ''}
+      </p>
+    `;
+  });
+}
+
+
 function onTimeSliderChange() {
   if (!allData || !allCommits || !timeScale) return;
 
@@ -368,10 +482,75 @@ function onTimeSliderChange() {
 
   // 5) update the existing scatter plot
   updateScatterPlot(allData, filteredCommits);
+
+  // 6) update the files unit visualization
+  updateFileDisplay(filteredCommits);
+}
+
+function highlightFilesForCommit(commit) {
+  const filesRoot = d3.select('#files');
+  if (filesRoot.empty() || !commit || !commit.lines) return;
+
+  // Find the top 1–2 files for this commit
+  const topFiles = d3.rollups(
+    commit.lines,
+    v => v.length,
+    l => l.file
+  )
+    .sort((a, b) => d3.descending(a[1], b[1]))
+    .slice(0, 2)
+    .map(d => d[0]); // just the file names
+
+  // Mark the matching file blocks as active
+  filesRoot
+    .selectAll('div')
+    .classed('is-active', d => topFiles.includes(d.name));
 }
 
 
+let scroller; // Scrollama instance
 
+function onStepEnter(response) {
+  // The DOM element for this step has the commit data bound to it
+  const commit = response.element.__data__;
+  if (!commit || !timeScale) return;
+
+  const slider = document.querySelector('#commit-progress');
+  if (!slider) return;
+
+  // 1) Visually mark the active step
+  d3.selectAll('#scatter-story .step').classed('is-active', false);
+  d3.select(response.element).classed('is-active', true);
+
+  // 2) Move the slider to this commit's datetime
+  const progress = timeScale(commit.datetime);
+  commitProgress = progress;
+  slider.value = progress;
+
+  // 3) Reuse slider logic to update plot + file dots
+  onTimeSliderChange();
+
+  // 4) Link story step to the file view
+  highlightFilesForCommit(commit);
+}
+
+
+function setupScrolly() {
+  scroller = scrollama();
+
+  scroller
+    .setup({
+      container: '#scrolly-1',
+      step: '#scrolly-1 .step',
+      offset: 0.6, // trigger when step is ~60% down the viewport
+    })
+    .onStepEnter(onStepEnter);
+}
+
+// keep Scrollama responsive
+window.addEventListener('resize', () => {
+  if (scroller) scroller.resize();
+});
 
 
 // ---- Init wrapper (avoids top-level await) ----
@@ -386,7 +565,6 @@ async function init() {
     allData = data;
     allCommits = commits;
 
-    // timeScale maps datetime -> 0–100, we invert it for slider->time
     timeScale = d3.scaleTime()
       .domain([
         d3.min(allCommits, d => d.datetime),
@@ -402,11 +580,15 @@ async function init() {
     const slider = document.querySelector('#commit-progress');
     if (slider) {
       slider.addEventListener('input', onTimeSliderChange);
-      // initialize label & plot once on load
-      onTimeSliderChange();
+      onTimeSliderChange(); // initialize label + plots
     }
 
-    // expose for quick debugging in console
+    // Lab 8 Step 3.2 – generate narrative steps
+    renderCommitStory(commits);
+
+    // Lab 8 Step 3.3 – set up Scrollama
+    setupScrolly();
+
     window.metaDebug = { data, commits };
   } catch (err) {
     console.error(err);

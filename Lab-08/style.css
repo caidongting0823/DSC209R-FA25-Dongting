@@ -477,3 +477,216 @@ dl.info[hidden]:not(:hover,:focus-within){ opacity:0; visibility:hidden }
 }
 
 circle.selected { fill: #ff6b6b; }
+
+/* Lab 8 – Step 2: Files unit visualization */
+#files {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 0.4rem 1rem;
+  margin-top: 1rem;
+}
+
+/* Each file block reuses the parent grid (subgrid) */
+#files > div {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+/* filename + metadata */
+#files dt {
+  grid-column: 1;
+}
+
+#files dt code {
+  font-size: 0.9rem;
+}
+
+#files dt small {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* unit dots container */
+#files dd {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.15em;
+  padding-top: 0.6em;
+  margin-left: 0;
+}
+
+/* one dot per line of code */
+#files .loc {
+  display: flex;
+  width: 0.5em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color, steelblue);
+}
+
+/* Lab 8 – Step 3: Scrollytelling layout */
+#scrolly-1 {
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+#scrolly-1 > * {
+  flex: 1;
+}
+
+#scatter-story {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Sticky card for the plot – clean white */
+#scatter-plot {
+  position: sticky;
+  top: 0;
+  left: 0;
+  bottom: auto;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.1rem 1.3rem 1.2rem;
+  border-radius: 18px;
+  border: 1px solid var(--line, #ddd);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+
+
+/* chart fills the sticky card */
+#scatter-plot #chart {
+  flex: 1;
+}
+
+#scatter-plot h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  opacity: .9;
+}
+
+/* Narrative steps – base look */
+#scatter-story .step {
+  padding: 1.1rem 1rem 1.6rem;
+  margin-bottom: 28vh; /* smaller but still gives each step “time” */
+  border-left: 2px solid color-mix(in oklab, var(--line, #ddd) 70%, #000 30%);
+  padding-left: 1rem;
+  border-radius: 0 14px 14px 0;
+  background: color-mix(in oklab, Canvas 96%, #000 4%);
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  transition:
+    background 160ms ease-out,
+    border-color 160ms ease-out,
+    box-shadow 160ms ease-out,
+    transform 160ms ease-out,
+    opacity 160ms ease-out;
+  opacity: 0.75;
+}
+
+/* last step: smaller tail so page doesn't feel endless */
+#scatter-story .step:last-child {
+  margin-bottom: 12vh;
+}
+
+/* Highlight the active step */
+#scatter-story .step.is-active {
+  border-left-color: var(--accent);
+  background:
+    linear-gradient(135deg,
+      color-mix(in oklab, var(--accent) 14%, Canvas 86%),
+      color-mix(in oklab, Canvas 90%, #000 10%));
+  box-shadow: 0 14px 30px rgba(0,0,0,.16);
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+/* Step text micro-typography */
+.step-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted, #666);
+}
+
+.step-title {
+  margin: .35rem 0 .25rem;
+  font-weight: 600;
+}
+
+.step-title a {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid transparent;
+}
+
+.step-title a:hover {
+  border-bottom-color: currentColor;
+}
+
+.step-body {
+  margin: 0;
+  font-size: .9rem;
+}
+
+.step-file {
+  white-space: nowrap;
+}
+
+.step-file code {
+  font-size: .82rem;
+}
+
+.step-file-lines {
+  margin-left: .25rem;
+  font-variant-numeric: tabular-nums;
+  opacity: .8;
+}
+
+/* Slider polish so it matches the rest of the card-y UI */
+#commit-filter {
+  margin-block: 1.5rem 1rem;
+}
+
+#commit-filter label {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: .4rem 1rem;
+  align-items: center;
+  font-size: .9rem;
+}
+
+#commit-progress {
+  width: 100%;
+}
+
+#commit-progress-time {
+  font-variant-numeric: tabular-nums;
+  opacity: .8;
+}
+
+/* Highlight corresponding file rows when a commit is active */
+#files > div.is-active dt code {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+#files > div.is-active .loc {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 40%, Canvas 60%);
+}
